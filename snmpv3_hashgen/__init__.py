@@ -1,0 +1,1 @@
+from .hashgen import Hashgen
