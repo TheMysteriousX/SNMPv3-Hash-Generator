@@ -16,17 +16,15 @@ parser.add_argument('--auth', type=str, help='Authentication passphrase to be de
 parser.add_argument('--priv', type=str, help='Privacy passphrase to be derived as utf8 string')
 parser.add_argument('--engine', type=str, help='Engine ID as hex string')
 parser.add_argument('--user', type=str, help='SNMPv3 USM username (default "observium")')
-parser.add_argument('--mode', type=str, choices=['authpriv', 'auth', 'priv', 'none'],  help='SNMPv3 mode (default "authpriv")')
+parser.add_argument('--mode', type=str, choices=['auth', 'priv', 'none'],  help='SNMPv3 mode (default "priv")')
 parser.add_argument('--hash', type=str, choices=['md5', 'sha1'],  help='Hash algorithm to use (default "sha1")')
 parser.add_argument('--json', action='store_true', help='Emit output as json')
 
 def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
-    if mode == "authpriv":
+    if mode == "priv":
         return f"{user}/{hash(Kul_auth)}/{hash(Kul_priv)}/{mode}"
     elif mode == "auth":
         return f"{user}/{hash(Kul_auth)}/-/{mode}"
-    elif mode == "priv":
-        return f"{user}/-/{hash(Kul_priv)}/{mode}"
     else:
         return f"{user}/-/-/{mode}"
 
@@ -34,8 +32,12 @@ def main(*args, **kwargs):
     # Argument setup
     args = parser.parse_args()
 
+    if args.priv and not args.auth:
+        print("Error: privacy passphrase supplied without auth passphrase", file=sys.stderr)
+        sys.exit(3)
+
     user = "observium" if not args.user else args.user
-    mode = "authpriv" if not args.mode else args.mode
+    mode = "priv" if not args.mode else args.mode
     auth = Hashgen.random_string() if not args.auth else args.auth
     priv = Hashgen.random_string() if not args.priv else args.priv
     engine = Hashgen.random_engine() if not args.engine else args.engine
@@ -43,7 +45,7 @@ def main(*args, **kwargs):
 
     # Derive Kul from passphrases
     try:
-        Kul_auth = Hashgen.derive_msg(auth, engine) if "auth" in mode else None
+        Kul_auth = Hashgen.derive_msg(auth, engine) if "none" not in mode else None
         Kul_priv = Hashgen.derive_msg(priv, engine) if "priv" in mode else None
     except ValueError as e:
         print("Error: Engine ID seems invalid; ensure that it is entered as a hex character string", file=sys.stderr)
@@ -56,18 +58,18 @@ def main(*args, **kwargs):
             'user': user,
             'engine': engine,
             'phrases': {
-                'auth': auth if "auth" in mode else None,
+                'auth': auth if "none" not in mode else None,
                 'priv': priv if "priv" in mode else None,
             },
             'hashes': {
-                'auth': hash(Kul_auth) if "auth" in mode else None,
+                'auth': hash(Kul_auth) if "auth" in mode or "priv" in mode else None,
                 'priv': hash(Kul_priv) if "priv" in mode else None,
             },
             'esxi': esxi,
         }))
     else:
         print(f"User: {user}")
-        if "auth" in mode:
+        if "none" not in mode:
             print(f"Auth: {auth} / {hash(Kul_auth)}")
         if "priv" in mode:
             print(f"Priv: {priv} / {hash(Kul_priv)}")

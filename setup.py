@@ -14,7 +14,7 @@ if os.path.exists('README.rst'):
 
 setup(
     name='SNMPv3 Hash Generator',
-    version='0.1',
+    version='0.2',
     packages=find_packages(),
     entry_points={
         'console_scripts': [
