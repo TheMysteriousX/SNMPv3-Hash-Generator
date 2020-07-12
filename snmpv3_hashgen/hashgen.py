@@ -42,8 +42,8 @@ class Hashgen(object):
 
         return b''.join([Ku, E, Ku])
 
-    # Define available hash algorithms
-    algs = {
-        'sha1': sha1,
-        'md5': md5,
-    }
+# Define available hash algorithms
+Hashgen.algs = {
+    'sha1': Hashgen.sha1,
+    'md5': Hashgen.md5,
+}
