@@ -14,7 +14,7 @@ if os.path.exists("README.rst"):
 
 setup(
     name="SNMPv3 Hash Generator",
-    version="0.3",
+    version="0.4.0",
     packages=find_packages(),
     entry_points={"console_scripts": ["snmpv3-hashgen=scripts.snmpv3_hashgen:main"]},
     license="Apache Software License",

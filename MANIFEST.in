@@ -2,6 +2,7 @@ include *.md
 include *.rst
 include *.py
 include LICENSE
+include CHANGELOG.md
 exclude tox.ini
 exclude pyproject.toml
 exclude generate_readme.rst.py
