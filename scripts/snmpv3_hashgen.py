@@ -11,13 +11,13 @@ import json
 
 from snmpv3_hashgen import Hashgen
 
-parser = argparse.ArgumentParser(description='Convert an SNMPv3 auth or priv passphrase to sha1 or md5 hashes')
+parser = argparse.ArgumentParser(description='Convert an SNMPv3 auth or priv passphrase to hashes\nthe author does not have access to a server implementation of sha[2-9]{3}; and RFC7630 defines no test data - these are not tested.')
 parser.add_argument('--auth', type=str, help='Authentication passphrase to be derived as utf8 string')
 parser.add_argument('--priv', type=str, help='Privacy passphrase to be derived as utf8 string')
 parser.add_argument('--engine', type=str, help='Engine ID as hex string')
 parser.add_argument('--user', type=str, help='SNMPv3 USM username (default "librenms")')
 parser.add_argument('--mode', type=str, choices=['auth', 'priv', 'none'],  help='SNMPv3 mode (default "priv")')
-parser.add_argument('--hash', type=str, choices=['md5', 'sha1'],  help='Hash algorithm to use (default "sha1")')
+parser.add_argument('--hash', type=str, choices=['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512'],  help='Hash algorithm to use (default "sha1")')
 parser.add_argument('--json', action='store_true', help='Emit output as json')
 
 def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
@@ -41,7 +41,7 @@ def main(*args, **kwargs):
     auth = Hashgen.random_string() if not args.auth else args.auth
     priv = Hashgen.random_string() if not args.priv else args.priv
     engine = Hashgen.random_engine() if not args.engine else args.engine
-    hash = Hashgen.sha1 if not args.hash else Hashgen.algs[args.hash]
+    hash = Hashgen.algs['sha1'] if not args.hash else Hashgen.algs[args.hash]
 
     # Derive Kul from passphrases
     try:
