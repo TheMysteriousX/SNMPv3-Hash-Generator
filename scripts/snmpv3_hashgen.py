@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Convert an SNMPv3 auth or priv pas
 parser.add_argument('--auth', type=str, help='Authentication passphrase to be derived as utf8 string')
 parser.add_argument('--priv', type=str, help='Privacy passphrase to be derived as utf8 string')
 parser.add_argument('--engine', type=str, help='Engine ID as hex string')
-parser.add_argument('--user', type=str, help='SNMPv3 USM username (default "observium")')
+parser.add_argument('--user', type=str, help='SNMPv3 USM username (default "librenms")')
 parser.add_argument('--mode', type=str, choices=['auth', 'priv', 'none'],  help='SNMPv3 mode (default "priv")')
 parser.add_argument('--hash', type=str, choices=['md5', 'sha1'],  help='Hash algorithm to use (default "sha1")')
 parser.add_argument('--json', action='store_true', help='Emit output as json')
@@ -36,7 +36,7 @@ def main(*args, **kwargs):
         print("Error: privacy passphrase supplied without auth passphrase", file=sys.stderr)
         sys.exit(3)
 
-    user = "observium" if not args.user else args.user
+    user = "librenms" if not args.user else args.user
     mode = "priv" if not args.mode else args.mode
     auth = Hashgen.random_string() if not args.auth else args.auth
     priv = Hashgen.random_string() if not args.priv else args.priv
