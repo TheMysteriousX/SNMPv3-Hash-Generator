@@ -14,7 +14,7 @@ if os.path.exists('README.rst'):
 
 setup(
     name='SNMPv3 Hash Generator',
-    version='0.2',
+    version='0.3',
     packages=find_packages(),
     entry_points={
         'console_scripts': [
@@ -24,6 +24,11 @@ setup(
 
     license='Apache Software License',
     long_description=long_desc,
+
+    extras_require={
+        "YAML": ["PyYAML"],
+        "TOML": ["toml"],
+    },
 
     author="Adam Bishop",
     author_email="adam@omega.org.uk",

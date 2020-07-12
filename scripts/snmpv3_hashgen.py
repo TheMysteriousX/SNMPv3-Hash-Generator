@@ -11,14 +11,27 @@ import json
 
 from snmpv3_hashgen import Hashgen
 
-parser = argparse.ArgumentParser(description='Convert an SNMPv3 auth or priv passphrase to hashes\nthe author does not have access to a server implementation of sha[2-9]{3}; and RFC7630 defines no test data - these are not tested.')
+help_text = """
+Convert an SNMPv3 auth or priv passphrase to hashes.
+"""
+
+epilog_text = """
+RFC 7630 defines no test data for sha[2-9]{3} - these should be considered experimental.
+Report bugs at https://github.com/TheMysteriousX/SNMPv3-Hash-Generator/issues
+"""
+
+parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, description=help_text, epilog=epilog_text)
 parser.add_argument('--auth', type=str, help='Authentication passphrase to be derived as utf8 string')
 parser.add_argument('--priv', type=str, help='Privacy passphrase to be derived as utf8 string')
 parser.add_argument('--engine', type=str, help='Engine ID as hex string')
 parser.add_argument('--user', type=str, help='SNMPv3 USM username (default "librenms")')
 parser.add_argument('--mode', type=str, choices=['auth', 'priv', 'none'],  help='SNMPv3 mode (default "priv")')
-parser.add_argument('--hash', type=str, choices=['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512'],  help='Hash algorithm to use (default "sha1")')
-parser.add_argument('--json', action='store_true', help='Emit output as json')
+parser.add_argument('--hash', type=str, choices=['md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512'], help='Hash algorithm to use (default "sha1")', )
+
+fmt = parser.add_mutually_exclusive_group()
+fmt.add_argument('--json', action='store_true', help='Emit output as json', )
+fmt.add_argument('--yaml', action='store_true', help='Emit output as yaml')
+fmt.add_argument('--toml', action='store_true', help='Emit output as toml')
 
 def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
     if mode == "priv":
@@ -52,9 +65,7 @@ def main(*args, **kwargs):
         sys.exit(1)
 
     esxi = format_esxi(user, Kul_auth, Kul_priv, mode, hash)
-
-    if args.json:
-        print(json.dumps({
+    output = {
             'user': user,
             'engine': engine,
             'phrases': {
@@ -66,7 +77,26 @@ def main(*args, **kwargs):
                 'priv': hash(Kul_priv) if "priv" in mode else None,
             },
             'esxi': esxi,
-        }))
+    }
+
+    if args.json:
+        print(json.dumps(output))
+    elif args.yaml:
+        try:
+            import yaml
+            print(yaml.dump({'snmpv3': output}, explicit_start=True))
+        except ImportError:
+            print('YAML output requires a YAML library')
+            print('Try running pip3 install PyYaml')
+            sys.exit(4)
+    elif args.toml:
+        try:
+            import toml
+            print(toml.dumps(output))
+        except ImportError:
+            print('TOML output requires a TOML library')
+            print('Try running pip3 install toml')
+            sys.exit(5)
     else:
         print(f"User: {user}")
         if "none" not in mode:
