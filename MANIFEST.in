@@ -1,0 +1,14 @@
+include *.md
+include *.rst
+include *.py
+include LICENSE
+exclude tox.ini
+exclude pyproject.toml
+exclude generate_readme.rst.py
+recursive-exclude .vscode *
+recursive-exclude .tox *
+recursive-exclude dist *
+recursive-exclude tests *
+global-exclude __pycache__
+global-exclude *~
+global-exclude *.pyc
