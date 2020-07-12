@@ -45,8 +45,8 @@ def main(*args, **kwargs):
 
     # Derive Kul from passphrases
     try:
-        Kul_auth = Hashgen.derive_msg(auth, engine) if "none" not in mode else None
-        Kul_priv = Hashgen.derive_msg(priv, engine) if "priv" in mode else None
+        Kul_auth = Hashgen.derive_msg(auth, engine, hash) if "none" not in mode else None
+        Kul_priv = Hashgen.derive_msg(priv, engine, hash) if "priv" in mode else None
     except ValueError as e:
         print("Error: Engine ID seems invalid; ensure that it is entered as a hex character string", file=sys.stderr)
         sys.exit(1)
