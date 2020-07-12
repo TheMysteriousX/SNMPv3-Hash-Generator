@@ -84,7 +84,7 @@ def main(*args, **kwargs):
             print(yaml.dump({"snmpv3": output}, explicit_start=True))
         except ImportError:
             print("YAML output requires a YAML library")
-            print("Try running pip3 install PyYaml")
+            print("Try running pip3 install PyYAML")
             sys.exit(4)
     elif args.toml:
         try:
