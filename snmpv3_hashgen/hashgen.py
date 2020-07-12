@@ -9,12 +9,14 @@ E_LEN = 16
 
 class Hashgen(object):
     @staticmethod
-    def md5(bytes):
-        return hashlib.md5(bytes).digest().hex()
+    def md5(bytes, raw=False):
+        digest = hashlib.md5(bytes).digest()
+        return digest if raw else digest.hex()
 
     @staticmethod
-    def sha1(bytes):
-        return hashlib.sha1(bytes).digest().hex()
+    def sha1(bytes, raw=False):
+        digest = hashlib.sha1(bytes).digest()
+        return digest if raw else digest.hex()
 
     @staticmethod
     def expand(s, l):
@@ -22,9 +24,9 @@ class Hashgen(object):
         return ''.join(list(repeat(s, reps)))[:l]
 
     @classmethod
-    def kdf(cls, password):
+    def kdf(cls, password, hash):
         data = cls.expand(password, 1048576).encode('utf-8')
-        return hashlib.sha1(data).digest()
+        return hash(data, True)
 
     @staticmethod
     def random_string(len=P_LEN, alphabet=(string.ascii_letters + string.digits)):
@@ -35,9 +37,9 @@ class Hashgen(object):
         return secrets.token_hex(len)
 
     @classmethod
-    def derive_msg(cls, passphrase, engine):
+    def derive_msg(cls, passphrase, engine, hash):
         # Parameter derivation á la rfc3414
-        Ku = cls.kdf(passphrase)
+        Ku = cls.kdf(passphrase, hash)
         E = bytearray.fromhex(engine)
 
         return b''.join([Ku, E, Ku])
