@@ -42,6 +42,16 @@ def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
     else:
         return f"{user}/-/-/{mode}"
 
+def format_sros(user, Kul_auth, Kul_priv, mode, hash, hashmode):
+    if hashmode == "sha1":
+        hashmode = "sha"
+
+    if mode == "priv" and (hashmode == "sha" or hashmode == "md5"):
+        return f"configure system security user {user} snmp authentication {hashmode} {hash(Kul_auth)} privacy aes-128-cfb-key {hash(Kul_priv)}"
+    elif mode == "auth" and (hashmode == "sha" or hashmode == "md5"):
+        return f"configure system security user {user} snmp authentication {hashmode} {hash(Kul_auth)}"
+    else:
+        return f"unsupported hash algorithm"
 
 def main(*args, **kwargs):
     # Argument setup
@@ -67,12 +77,14 @@ def main(*args, **kwargs):
         sys.exit(1)
 
     esxi = format_esxi(user, Kul_auth, Kul_priv, mode, hash)
+    sros = format_sros(user, Kul_auth, Kul_priv, mode, hash, args.hash)
     output = {
         "user": user,
         "engine": engine,
         "phrases": {"auth": auth if "none" not in mode else None, "priv": priv if "priv" in mode else None},
         "hashes": {"auth": hash(Kul_auth) if "auth" in mode or "priv" in mode else None, "priv": hash(Kul_priv) if "priv" in mode else None},
         "esxi": esxi,
+        "sros": sros
     }
 
     if args.json:
@@ -103,6 +115,7 @@ def main(*args, **kwargs):
             print(f"Priv: {priv} / {hash(Kul_priv)}")
         print(f"Engine: {engine}")
         print(f"ESXi USM String: {esxi}")
+        print(f"SR-OS Config: {sros}")
 
 
 if __name__ == "__main__":
