@@ -43,8 +43,7 @@ def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
         return f"{user}/-/-/{mode}"
 
 def format_sros(user, Kul_auth, Kul_priv, mode, hash):
-    if hash.keywords['name'] == "sha1":
-        hashmode = "sha"
+    hashmode = "sha" if hash.keywords['name'] == "sha1" else hash.keywords['name']
 
     if mode == "priv" and (hashmode == "sha" or hashmode == "md5"):
         return f"configure system security user {user} snmp authentication {hashmode} {hash(Kul_auth)} privacy aes-128-cfb-key {hash(Kul_priv)}"
