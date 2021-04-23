@@ -42,8 +42,8 @@ def format_esxi(user, Kul_auth, Kul_priv, mode, hash):
     else:
         return f"{user}/-/-/{mode}"
 
-def format_sros(user, Kul_auth, Kul_priv, mode, hash, hashmode):
-    if hashmode == "sha1":
+def format_sros(user, Kul_auth, Kul_priv, mode, hash):
+    if hash.keywords['name'] == "sha1":
         hashmode = "sha"
 
     if mode == "priv" and (hashmode == "sha" or hashmode == "md5"):
@@ -68,7 +68,7 @@ def main(*args, **kwargs):
     engine = Hashgen.random_engine() if not args.engine else args.engine
     hash = Hashgen.algs["sha1"] if not args.hash else Hashgen.algs[args.hash]
 
-    #  Derive Kul from passphrases
+    # Derive Kul from passphrases
     try:
         Kul_auth = Hashgen.derive_msg(auth, engine, hash) if "none" not in mode else None
         Kul_priv = Hashgen.derive_msg(priv, engine, hash) if "priv" in mode else None
@@ -77,7 +77,7 @@ def main(*args, **kwargs):
         sys.exit(1)
 
     esxi = format_esxi(user, Kul_auth, Kul_priv, mode, hash)
-    sros = format_sros(user, Kul_auth, Kul_priv, mode, hash, args.hash)
+    sros = format_sros(user, Kul_auth, Kul_priv, mode, hash)
     output = {
         "user": user,
         "engine": engine,
