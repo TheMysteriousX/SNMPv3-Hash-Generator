@@ -11,7 +11,7 @@ E_LEN = 16
 
 class Hashgen(object):
     @staticmethod
-    def hash(bytes, alg=hashlib.sha1, raw=False):
+    def hash(bytes, alg=hashlib.sha1, name=None, raw=False):
         digest = alg(bytes).digest()
         return digest if raw else digest.hex()
 
@@ -46,10 +46,10 @@ class Hashgen(object):
 
 # Define available hash algorithms
 Hashgen.algs = {
-    "md5": partial(Hashgen.hash, alg=hashlib.md5),
-    "sha1": partial(Hashgen.hash, alg=hashlib.sha1),
-    "sha224": partial(Hashgen.hash, alg=hashlib.sha224),
-    "sha256": partial(Hashgen.hash, alg=hashlib.sha256),
-    "sha384": partial(Hashgen.hash, alg=hashlib.sha384),
-    "sha512": partial(Hashgen.hash, alg=hashlib.sha512),
+    "md5":    partial(Hashgen.hash, alg=hashlib.md5,    name='md5'),
+    "sha1":   partial(Hashgen.hash, alg=hashlib.sha1,   name='sha1'),
+    "sha224": partial(Hashgen.hash, alg=hashlib.sha224, name='sha224'),
+    "sha256": partial(Hashgen.hash, alg=hashlib.sha256, name='sha256'),
+    "sha384": partial(Hashgen.hash, alg=hashlib.sha384, name='sha384'),
+    "sha512": partial(Hashgen.hash, alg=hashlib.sha512, name='sha512'),
 }
