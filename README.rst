@@ -31,7 +31,7 @@ Standard
    Priv: H5XEtRpxXVaGzXU5i2rFwPnYGr8SEzTp / 31a001a56a225fdfc1916bd60190405a1aa22ff0
    Engine: 7ae1b0ff0aa2f3950566d3de2274d05a
    ESXi USM String: observium/f78359764ca382922fa382cf884e588031de575a/31a001a56a225fdfc1916bd60190405a1aa22ff0/authpriv
-   SR-OS Config: configure system security user observium snmp authentication md5 f78359764ca382922fa382cf884e588031de575a privacy aes-128-cfb-key 31a001a56a225fdfc1916bd60190405a1aa22ff0
+   SR-OS Config: configure system security user observium snmp authentication sha f78359764ca382922fa382cf884e588031de575a privacy aes-128-cfb-key 31a001a56a225fdfc1916bd60190405a
 
 JSON
 ----
@@ -50,7 +50,7 @@ JSON
        "priv": "cccbdcfa603817df340514ecc22dfae8c4c412e8"
      },
      "esxi": "observium/fa0d5249293404502f9953b9514d0636a96c2cbc/cccbdcfa603817df340514ecc22dfae8c4c412e8/authpriv",
-     "sros": "configure system security user observium snmp authentication md5 f78359764ca382922fa382cf884e588031de575a privacy aes-128-cfb-key 31a001a56a225fdfc1916bd60190405a1aa22ff0"
+     "sros": "configure system security user observium snmp authentication sha f78359764ca382922fa382cf884e588031de575a privacy aes-128-cfb-key 31a001a56a225fdfc1916bd60190405a"
     }
 
 If a YAML or TOML library is installed, you also use the ``--yaml`` and
